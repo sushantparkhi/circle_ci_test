@@ -21,10 +21,12 @@ jobs: # a collection of steps
       - store_test_results:
           path: target/surefire-reports
   build: # runs not using Workflows must have a `build` job as entry point
+    docker: # run the steps with Docker
+      - image: circleci/openjdk:11-jdk # ...with this image
     steps: # a collection of executable commands
       - run:
           name: Build Package
-          command: mvn package # run the actual tests
+          command: mvn package -Dmaven.test.skip=true # run the actual tests
       - store_artifacts:
           path: target/
 workflows:
