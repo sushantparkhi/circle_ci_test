@@ -1,6 +1,6 @@
 version: 2 # use CircleCI 2.0
 jobs: # a collection of steps
-  build: # runs not using Workflows must have a `build` job as entry point
+  build-test: # runs not using Workflows must have a `build` job as entry point
     working_directory: ~/circle_ci_test
     docker: # run the steps with Docker
       - image: circleci/openjdk:11-jdk # ...with this image
@@ -18,3 +18,8 @@ jobs: # a collection of steps
           path: target/surefire-reports
       - store_artifacts:
           path: target/
+workflows:
+  version: 2
+  build-and-test:
+    jobs:
+      - build-test
