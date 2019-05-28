@@ -45,7 +45,6 @@
     </dependencies>
 
     <build>
-        <finalName>cirlceci</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
