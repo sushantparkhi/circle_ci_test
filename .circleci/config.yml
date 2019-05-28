@@ -1,20 +1,45 @@
-version: 2 # use CircleCI 2.0
-jobs: # a collection of steps
-  build: # runs not using Workflows must have a `build` job as entry point
+version: 2.1
+jobs:
+  test:
     working_directory: ~/circle_ci_test
-    docker: # run the steps with Docker
-      - image: circleci/openjdk:11-jdk # ...with this image
-    steps: # a collection of executable commands
-      - checkout # check out source code to working directory
-      - restore_cache: # restore the saved cache after the first run or if `pom.xml` has changed
+    docker:
+      - image: circleci/openjdk:11-jdk
+    steps:
+      - checkout
+      - restore_cache:
           key: circle_ci_test-{{ checksum "pom.xml" }}
-      - run: mvn dependency:go-offline # gets the project dependencies
-      - save_cache: # saves the project dependencies
+      - run:
+          name: Get Maven Dependencies
+          command: mvn dependency:go-offline
+      - save_cache:
           paths:
             - ~/.m2
           key: circle_ci_test-{{ checksum "pom.xml" }}
-      - run: mvn package # run the actual tests
+      - run:
+          name: Execute Unit Tests
+          command: mvn test # run the actual tests
       - store_test_results:
           path: target/surefire-reports
+  build:
+    docker:
+      - image: circleci/openjdk:11-jdk
+    steps:
+      - checkout
+      - restore_cache:
+          key: circle_ci_test-{{ checksum "pom.xml" }}
+      - run:
+          name: Get Maven Dependencies
+          command: mvn dependency:go-offline
+      - run:
+          name: Build Package
+          command: mvn package -Dmaven.test.skip=true
       - store_artifacts:
           path: target/
+workflows:
+  version: 2.1
+  test-and-build:
+    jobs:
+      - test
+      - build:
+          requires:
+            - test
