@@ -1,7 +1,7 @@
 version: 2 # use CircleCI 2.0
 jobs: # a collection of steps
   build: # runs not using Workflows must have a `build` job as entry point
-    working_directory: ~/circleci
+    working_directory: ~/circle_ci_test
     docker: # run the steps with Docker
       - image: circleci/openjdk:11-jdk # ...with this image
     steps: # a collection of executable commands
@@ -14,7 +14,7 @@ jobs: # a collection of steps
             - ~/.m2
           key: circle_ci_test-{{ checksum "pom.xml" }}
       - run: mvn package # run the actual tests
-      - store_test_results: # uploads the test metadata from the `target/surefire-reports` directory so that it can show up in the CircleCI dashboard. 
+      - store_test_results: 
           path: target/surefire-reports
-      - store_artifacts: # store the uberjar as an artifact
-          path: target/circleci.jar
+      - store_artifacts: 
+          path: /home/circleci/circle_ci_test/target/circleci.jar
