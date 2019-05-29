@@ -10,16 +10,19 @@
     "url": "git+https://github.com/sushantparkhi/circle_ci_test.git"
   },
   "author": "Sushant Parkhi",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/sushantparkhi/circle_ci_test/issues"
   },
   "homepage": "https://github.com/sushantparkhi/circle_ci_test#readme",
   "devDependencies": {
+    "@commitlint/cli": "^7.6.1",
+    "@commitlint/config-conventional": "^7.6.0",
     "commitizen": "^3.1.1",
-    "cz-conventional-changelog": "^2.1.0"
+    "cz-conventional-changelog": "^2.1.0",
+    "husky": "^2.3.0",
+    "semantic-release": "^15.13.12"
   },
-  "czConfig":{
-    "path":"node_modules/cz-conventional-changelog"
+  "czConfig": {
+    "path": "node_modules/cz-conventional-changelog"
   }
 }
