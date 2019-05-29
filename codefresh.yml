@@ -24,20 +24,6 @@ steps:
     revision: '${{CF_REVISION}}'
     stage: prepare
     git: github
-    on_fail:
-      SetStatusToPrepareToDone:
-        title: Set Prepare Stage to Done
-        image: cloudposse/github-status-updater
-        environment:
-          - GITHUB_ACTION=update_state
-          - GITHUB_TOKEN=${{GITHUB_TOKEN}}
-          - GITHUB_OWNER=${{CF_REPO_OWNER}}
-          - GITHUB_REPO=${{CF_REPO_NAME}}
-          - GITHUB_REF=${{CF_REVISION}}
-          - GITHUB_CONTEXT=Prepare
-          - GITHUB_STATE=failure
-          - GITHUB_DESCRIPTION=Prepare Stage Failed
-          - GITHUB_TARGET_URL=${{CF_BUILD_URL}}
   SetStatusToPrepareToDone:
     title: Set Prepare Stage to Done
     image: cloudposse/github-status-updater
