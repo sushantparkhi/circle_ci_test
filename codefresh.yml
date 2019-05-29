@@ -5,12 +5,12 @@ stages:
   - build
 steps:
   CloneRepo:
-    title: Cloning main repository...
+    title: Cloning Repository
     type: git-clone
     repo: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
     revision: '${{CF_REVISION}}'
     stage: prepare
-    git: CF-default
+    git: github
   ExecuteUnitTest:
     title: Unit test
     stage: test
