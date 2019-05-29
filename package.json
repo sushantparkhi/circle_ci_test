@@ -1,0 +1,25 @@
+{
+  "name": "circle_ci_test",
+  "version": "1.0.0",
+  "description": "CI Test",
+  "scripts": {
+    "commit": "git-cz"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sushantparkhi/circle_ci_test.git"
+  },
+  "author": "Sushant Parkhi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sushantparkhi/circle_ci_test/issues"
+  },
+  "homepage": "https://github.com/sushantparkhi/circle_ci_test#readme",
+  "devDependencies": {
+    "commitizen": "^3.1.1",
+    "cz-conventional-changelog": "^2.1.0"
+  },
+  "czConfig":{
+    "path":"node_modules/cz-conventional-changelog"
+  }
+}
