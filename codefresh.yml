@@ -4,6 +4,27 @@ stages:
   - test
   - build
 steps:
+  GetGithubToken:
+    title: Reading Github token
+    image: codefresh/cli
+    stage: prepare
+    commands:
+      - cf_export GITHUB_TOKEN=$(codefresh get context github --decrypt -o yaml | yq -y .spec.data.auth.password)
+
+  SetStatusToPrepareToPending:
+    title: Set Prepare Stage to Pending
+    image: cloudposse/github-status-updater
+    stage: prepare
+    environment:
+      - GITHUB_ACTION=update_state
+      - GITHUB_TOKEN=${{GITHUB_TOKEN}}
+      - GITHUB_OWNER=${{CF_REPO_OWNER}}
+      - GITHUB_REPO=${{CF_REPO_NAME}}
+      - GITHUB_REF=${{CF_REVISION}}
+      - GITHUB_CONTEXT=Prepare
+      - GITHUB_STATE=pending
+      - GITHUB_DESCRIPTION=Executing Prepare Stage
+      - GITHUB_TARGET_URL=${{CF_BUILD_URL}}
   CloneRepo:
     title: Cloning Repository
     type: git-clone
@@ -11,6 +32,60 @@ steps:
     revision: '${{CF_REVISION}}'
     stage: prepare
     git: github
+  SetStatusToPrepareToDone:
+    title: Set Prepare Stage to Done
+    image: cloudposse/github-status-updater
+    stage: prepare
+    environment:
+      - GITHUB_ACTION=update_state
+      - GITHUB_TOKEN=${{GITHUB_TOKEN}}
+      - GITHUB_OWNER=${{CF_REPO_OWNER}}
+      - GITHUB_REPO=${{CF_REPO_NAME}}
+      - GITHUB_REF=${{CF_REVISION}}
+      - GITHUB_CONTEXT=Prepare
+      - GITHUB_STATE=success
+      - GITHUB_DESCRIPTION=Prepare Stage Successful
+      - GITHUB_TARGET_URL=${{CF_BUILD_URL}}
+    when:
+      condition:
+        all:
+          successCondition: steps.CloneRepo.result == 'success'
+
+  SetStatusToPrepareToError:
+    title: Set Prepare Stage to Error
+    image: cloudposse/github-status-updater
+    stage: prepare
+    environment:
+      - GITHUB_ACTION=update_state
+      - GITHUB_TOKEN=${{GITHUB_TOKEN}}
+      - GITHUB_OWNER=${{CF_REPO_OWNER}}
+      - GITHUB_REPO=${{CF_REPO_NAME}}
+      - GITHUB_REF=${{CF_REVISION}}
+      - GITHUB_CONTEXT=Prepare
+      - GITHUB_STATE=failure
+      - GITHUB_DESCRIPTION=Prepare Stage Failed
+      - GITHUB_TARGET_URL=${{CF_BUILD_URL}}
+    when:
+      condition:
+        any:
+          errorCondition: steps.CloneRepo.result == 'error'
+          failureCondition: steps.CloneRepo.result == 'failure'
+
+  SetStatusToTestToPending:
+    title: Set Test Stage to Pending
+    image: cloudposse/github-status-updater
+    stage: test
+    environment:
+      - GITHUB_ACTION=update_state
+      - GITHUB_TOKEN=${{GITHUB_TOKEN}}
+      - GITHUB_OWNER=${{CF_REPO_OWNER}}
+      - GITHUB_REPO=${{CF_REPO_NAME}}
+      - GITHUB_REF=${{CF_REVISION}}
+      - GITHUB_CONTEXT=Test
+      - GITHUB_STATE=pending
+      - GITHUB_DESCRIPTION=Executing Test Stage
+      - GITHUB_TARGET_URL=${{CF_BUILD_URL}}
+
   ExecuteUnitTest:
     title: Unit test
     stage: test
@@ -18,6 +93,59 @@ steps:
     image: 'maven:3.6.1-jdk-11-slim'
     commands:
       - mvn -Dmaven.repo.local='${{CF_VOLUME_PATH}}/m2_repository' test
+
+  SetStatusToTestToDone:
+    title: Set Test Stage to Done
+    image: cloudposse/github-status-updater
+    stage: test
+    environment:
+      - GITHUB_ACTION=update_state
+      - GITHUB_TOKEN=${{GITHUB_TOKEN}}
+      - GITHUB_OWNER=${{CF_REPO_OWNER}}
+      - GITHUB_REPO=${{CF_REPO_NAME}}
+      - GITHUB_REF=${{CF_REVISION}}
+      - GITHUB_CONTEXT=Test
+      - GITHUB_STATE=success
+      - GITHUB_DESCRIPTION=Test Stage Successful
+      - GITHUB_TARGET_URL=${{CF_BUILD_URL}}
+    when:
+      condition:
+        all:
+          successCondition: steps.ExecuteUnitTest.result == 'success'
+
+  SetStatusToTestToError:
+    title: Set Test Stage to Error
+    image: cloudposse/github-status-updater
+    stage: test
+    environment:
+      - GITHUB_ACTION=update_state
+      - GITHUB_TOKEN=${{GITHUB_TOKEN}}
+      - GITHUB_OWNER=${{CF_REPO_OWNER}}
+      - GITHUB_REPO=${{CF_REPO_NAME}}
+      - GITHUB_REF=${{CF_REVISION}}
+      - GITHUB_CONTEXT=Test
+      - GITHUB_STATE=failure
+      - GITHUB_DESCRIPTION=Test Stage Failed
+      - GITHUB_TARGET_URL=${{CF_BUILD_URL}}
+    when:
+      condition:
+        any:
+          errorCondition: steps.ExecuteUnitTest.result == 'error'
+          failureCondition: steps.ExecuteUnitTest.result == 'failure'
+  SetStatusToBuildToPending:
+    title: Set Build Stage to Pending
+    image: cloudposse/github-status-updater
+    stage: build
+    environment:
+      - GITHUB_ACTION=update_state
+      - GITHUB_TOKEN=${{GITHUB_TOKEN}}
+      - GITHUB_OWNER=${{CF_REPO_OWNER}}
+      - GITHUB_REPO=${{CF_REPO_NAME}}
+      - GITHUB_REF=${{CF_REVISION}}
+      - GITHUB_CONTEXT=Build
+      - GITHUB_STATE=pending
+      - GITHUB_DESCRIPTION=Executing Build Stage
+      - GITHUB_TARGET_URL=${{CF_BUILD_URL}}
   BuildJar:
     title: Build Executable
     stage: build
@@ -41,3 +169,45 @@ steps:
     tag: '${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}'
     registry: dockerhub
     image_name: sushantparkhi/circleci-test
+  SetStatusToBuildToDone:
+    title: Set Build Stage to Done
+    image: cloudposse/github-status-updater
+    stage: build
+    environment:
+      - GITHUB_ACTION=update_state
+      - GITHUB_TOKEN=${{GITHUB_TOKEN}}
+      - GITHUB_OWNER=${{CF_REPO_OWNER}}
+      - GITHUB_REPO=${{CF_REPO_NAME}}
+      - GITHUB_REF=${{CF_REVISION}}
+      - GITHUB_CONTEXT=Build
+      - GITHUB_STATE=success
+      - GITHUB_DESCRIPTION=Build Stage Successful
+      - GITHUB_TARGET_URL=${{CF_BUILD_URL}}
+    when:
+      condition:
+        all:
+          successCondition: steps.PushDockerImage.result == 'success'
+
+  SetStatusToBuildToError:
+    title: Set Build Stage to Error
+    image: cloudposse/github-status-updater
+    stage: test
+    environment:
+      - GITHUB_ACTION=update_state
+      - GITHUB_TOKEN=${{GITHUB_TOKEN}}
+      - GITHUB_OWNER=${{CF_REPO_OWNER}}
+      - GITHUB_REPO=${{CF_REPO_NAME}}
+      - GITHUB_REF=${{CF_REVISION}}
+      - GITHUB_CONTEXT=Build
+      - GITHUB_STATE=failure
+      - GITHUB_DESCRIPTION=Build Stage Failed
+      - GITHUB_TARGET_URL=${{CF_BUILD_URL}}
+    when:
+      condition:
+        any:
+          buildErrorCondition: steps.BuildJar.result == 'error'
+          buildFailureCondition: steps.BuildJar.result == 'failure'
+          buildDockerErrorCondition: steps.BuildDockerImage.result == 'error'
+          buildDockerFailureCondition: steps.BuildDockerImage.result == 'failure'
+          pushErrorCondition: steps.PushDockerImage.result == 'error'
+          pushFailureCondition: steps.PushDockerImage.result == 'failure'
