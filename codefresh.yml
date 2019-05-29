@@ -14,7 +14,7 @@ steps:
   execute_unit_test:
     title: Unit test
     stage: test
-    image: 'maven:3.6.2-jdk-11-alpine'
+    image: 'maven:3.6.1-jdk-11-slim'
     commands:
       - mvn -Dmaven.repo.local=/codefresh/volume/.m2 test
   build_docker_image:
