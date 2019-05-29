@@ -5,7 +5,7 @@ ENV WORKDIR=${WORKDIR:-"/opt/fwsas"}
 ENV PATH="${WORKDIR}:${PATH}"
 
 COPY target/circle_ci_test.jar ${WORKDIR}/
-COPY runExe.sh /
+COPY docker/runExe.sh /
 RUN set -eux; chmod +x /runExe.sh
 
 VOLUME ["${WORKDIR}/logs"]
