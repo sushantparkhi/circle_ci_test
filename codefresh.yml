@@ -17,14 +17,14 @@ steps:
     working_directory: '${{CF_VOLUME_PATH}}/${{CF_REPO_NAME}}'
     image: 'maven:3.6.1-jdk-11-slim'
     commands:
-      - mvn -Dmaven.repo.local=${{CF_VOLUME_PATH}}/m2_repository test
+      - mvn -Dmaven.repo.local='${{CF_VOLUME_PATH}}/m2_repository' test
   BuildJar:
     title: Build Executable
     stage: build
     working_directory: './${{CF_REPO_NAME}}'
     image: 'maven:3.6.1-jdk-11-slim'
     commands:
-      - mvn -Dmaven.repo.local=${{CF_VOLUME_PATH}}/m2_repository package -Dmaven.test.skip=true
+      - mvn -Dmaven.repo.local='${{CF_VOLUME_PATH}}/m2_repository' package -Dmaven.test.skip=true
   BuildDockerImage:
     title: Building Docker Image
     type: build
