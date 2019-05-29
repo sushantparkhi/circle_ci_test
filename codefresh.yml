@@ -18,11 +18,18 @@ steps:
     image: 'maven:3.6.1-jdk-11-slim'
     commands:
       - mvn -Dmaven.repo.local=/codefresh/volume/m2_repository test
-  ExecuteDockerImage:
+  BuildJar:
+    title: Build Executable
+      stage: build
+      working_directory: './${{CF_REPO_NAME}}'
+      image: 'maven:3.6.1-jdk-11-slim'
+      commands:
+        - mvn -Dmaven.repo.local=/codefresh/volume/m2_repository package -Dmaven.test.skip=true
+  BuildDockerImage:
     title: Building Docker Image
     type: build
     stage: build
-    image_name: my-app-image
+    image_name: circle_ci_test
     working_directory: './${{CF_REPO_NAME}}'
     tag: '${{CF_BRANCH_TAG_NORMALIZED}}'
     dockerfile: docker/Dockerfile

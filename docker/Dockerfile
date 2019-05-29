@@ -4,7 +4,7 @@ ARG WORKDIR
 ENV WORKDIR=${WORKDIR:-"/opt/fwsas"}
 ENV PATH="${WORKDIR}:${PATH}"
 
-COPY ../target/circle_ci_test.jar ${WORKDIR}/
+COPY target/circle_ci_test.jar ${WORKDIR}/
 COPY runExe.sh /
 RUN set -eux; chmod +x /runExe.sh
 
