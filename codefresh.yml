@@ -5,39 +5,16 @@ stages:
   - build
 steps:
   CloneRepo:
-    title: Cloning main repository...
+    title: Cloning Repository
     type: git-clone
     repo: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
     revision: '${{CF_REVISION}}'
     stage: prepare
-    git: CF-default
+    git: github
   ExecuteUnitTest:
     title: Unit test
     stage: test
-    working_directory: './${{CF_REPO_NAME}}'
+    working_directory: '${{CF_VOLUME_PATH}}/${{CF_REPO_NAME}}'
     image: 'maven:3.6.1-jdk-11-slim'
     commands:
-      - mvn -Dmaven.repo.local=/codefresh/volume/m2_repository test
-  BuildJar:
-    title: Build Executable
-    stage: build
-    working_directory: './${{CF_REPO_NAME}}'
-    image: 'maven:3.6.1-jdk-11-slim'
-    commands:
-      - mvn -Dmaven.repo.local=/codefresh/volume/m2_repository package -Dmaven.test.skip=true
-  BuildDockerImage:
-    title: Building Docker Image
-    type: build
-    stage: build
-    image_name: circle_ci_test
-    working_directory: './${{CF_REPO_NAME}}'
-    tag: '${{CF_BRANCH_TAG_NORMALIZED}}'
-    dockerfile: docker/Dockerfile
-  PushDockerImage:
-    stage: build
-    type: push
-    title: Pushing to Docker Hub
-    candidate: ${{BuildDockerImage}}
-    tag: '${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}'
-    registry: dockerhub
-    image_name: sushantparkhi/circleci-test
+      - mvn -Dmaven.repo.local='${{CF_VOLUME_PATH}}/m2_repository' test
