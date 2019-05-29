@@ -187,11 +187,10 @@ steps:
       condition:
         all:
           successCondition: steps.PushDockerImage.result == 'success'
-
   SetStatusToBuildToError:
     title: Set Build Stage to Error
     image: cloudposse/github-status-updater
-    stage: test
+    stage: build
     environment:
       - GITHUB_ACTION=update_state
       - GITHUB_TOKEN=${{GITHUB_TOKEN}}
