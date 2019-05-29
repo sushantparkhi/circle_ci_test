@@ -26,8 +26,12 @@
     "path": "node_modules/cz-conventional-changelog"
   },
   "husky": {
-  "hooks": {
-    "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-  } 
-}
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "release": {
+    "publish":"@semantic-release/github",
+    "npmPublish": false
+  }
 }
