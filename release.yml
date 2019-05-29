@@ -73,7 +73,7 @@ steps:
   SetStatusToReleaseToPending:
     title: Set Release Stage to Pending
     image: cloudposse/github-status-updater
-    stage: test
+    stage: release
     environment:
       - GITHUB_ACTION=update_state
       - GITHUB_TOKEN=${{GITHUB_TOKEN}}
@@ -97,7 +97,7 @@ steps:
   SetStatusToReleaseToDone:
     title: Set Release Stage to Done
     image: cloudposse/github-status-updater
-    stage: test
+    stage: release
     environment:
       - GITHUB_ACTION=update_state
       - GITHUB_TOKEN=${{GITHUB_TOKEN}}
@@ -116,7 +116,7 @@ steps:
   SetStatusToReleaseToError:
     title: Set Release Stage to Error
     image: cloudposse/github-status-updater
-    stage: test
+    stage: release
     environment:
       - GITHUB_ACTION=update_state
       - GITHUB_TOKEN=${{GITHUB_TOKEN}}
