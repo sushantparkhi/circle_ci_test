@@ -16,7 +16,7 @@ steps:
     stage: test
     image: 'maven:3.6.1-jdk-11-slim'
     commands:
-      - mvn -Dmaven.repo.local=/codefresh/volume/.m2 test
+      - mvn -Dmaven.repo.local=/codefresh/volume/m2_repository test
   build_docker_image:
     title: Building Docker Image
     type: build
