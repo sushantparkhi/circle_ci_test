@@ -4,20 +4,21 @@ stages:
   - test
   - build
 steps:
-  clone_repo:
+  CloneRepo:
     title: Cloning main repository...
     type: git-clone
     repo: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
     revision: '${{CF_REVISION}}'
     stage: prepare
-    git: CF-default
-  execute_unit_test:
+    git: github
+  ExecuteUnitTest:
     title: Unit test
     stage: test
+    working_directory: ./
     image: 'maven:3.6.1-jdk-11-slim'
     commands:
       - mvn -Dmaven.repo.local=/codefresh/volume/m2_repository test
-  build_docker_image:
+  ExecuteDockerImage:
     title: Building Docker Image
     type: build
     stage: build
