@@ -29,7 +29,14 @@ steps:
     title: Building Docker Image
     type: build
     stage: build
-    image_name: circle_ci_test
+    image_name: circleci-test
     working_directory: '${{CF_VOLUME_PATH}}/${{CF_REPO_NAME}}'
-    tag: '${{CF_BRANCH_TAG_NORMALIZED}}'
     dockerfile: docker/Dockerfile
+  PushDockerImage:
+    stage: build
+    type: push
+    title: Pushing to Docker Hub
+    candidate: ${{BuildDockerImage}}
+    tag: '${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}'
+    registry: dockerhub
+    image_name: sushantparkhi/circleci-test
