@@ -4,24 +4,24 @@ stages:
   - test
   - build
 steps:
-  main_clone:
+  clone_repo:
     title: Cloning main repository...
     type: git-clone
     repo: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
     revision: '${{CF_REVISION}}'
     stage: prepare
     git: CF-default
-  MyUnitTests:
+  execute_unit_test:
     title: Unit test
     stage: test
-    image: 'maven:3.5.2-jdk-8-alpine'
+    image: 'maven:3.6.2-jdk-11-alpine'
     commands:
-      - mvn -Dmaven.repo.local=/codefresh/volume/m2_repository test
-  MyAppDockerImage:
+      - mvn -Dmaven.repo.local=/codefresh/volume/.m2 test
+  build_docker_image:
     title: Building Docker Image
     type: build
     stage: build
     image_name: my-app-image
     working_directory: ./
     tag: '${{CF_BRANCH_TAG_NORMALIZED}}'
-    dockerfile: Dockerfile
+    dockerfile: docker/Dockerfile
