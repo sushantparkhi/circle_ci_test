@@ -1,6 +1,6 @@
 {
   "name": "circle_ci_test",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "CI Test",
   "scripts": {
     "commit": "git-cz"
