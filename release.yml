@@ -3,12 +3,12 @@ stages:
   - prepare
   - release
 steps:
-  GetGithubToken:
-    title: Reading Github token
-    image: codefresh/cli
-    stage: prepare
-    commands:
-      - cf_export GITHUB_TOKEN=$(codefresh get context github --decrypt -o yaml | yq -y .spec.data.auth.password)
+#  GetGithubToken:
+#    title: Reading Github token
+#    image: codefresh/cli
+#    stage: prepare
+#    commands:
+#      - cf_export GITHUB_TOKEN=$(codefresh get context github --decrypt -o yaml | yq -y .spec.data.auth.password)
 
   SetStatusToPrepareToPending:
     title: Set Prepare Stage to Pending
