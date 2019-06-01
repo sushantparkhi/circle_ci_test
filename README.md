@@ -1,1 +1,1 @@
-# CI with Convential Commit
+# CI with Convential Commits
