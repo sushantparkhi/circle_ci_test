@@ -2,36 +2,44 @@
   "name": "circle_ci_test",
   "version": "0.0.1",
   "description": "CI Test",
-  "scripts": {
-    "commit": "git-cz"
-  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sushantparkhi/circle_ci_test.git"
+    "url": "git@github.com:sushantparkhi/circle_ci_test.git"
   },
   "author": "Sushant Parkhi",
-  "bugs": {
-    "url": "https://github.com/sushantparkhi/circle_ci_test/issues"
-  },
-  "homepage": "https://github.com/sushantparkhi/circle_ci_test#readme",
   "devDependencies": {
-    "@commitlint/cli": "^7.6.1",
-    "@commitlint/config-conventional": "^7.6.0",
-    "commitizen": "^3.1.1",
-    "cz-conventional-changelog": "^2.1.0",
-    "husky": "^2.3.0",
-    "semantic-release": "^15.13.12"
-  },
-  "czConfig": {
-    "path": "node_modules/cz-conventional-changelog"
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
+    "semantic-release": "^15.13.12",
+    "@semantic-release/exec": "^3.3.0",
+    "@semantic-release/changelog": "^3.0.2",
+    "@semantic-release/git": "^7.0.11"
   },
   "release": {
-    "publish":"@semantic-release/github",
-    "npmPublish": false
+    "publish": "@semantic-release/github",
+    "npmPublish": false,
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "./prepare-release.sh ${nextRelease.version}"
+        }
+      ],
+      [
+        "@semantic-release/changelog",
+        {
+          "changelogFile": "CHANGELOG.md",
+          "changelogTitle": "# Semantic Versioning Changelog"
+        }
+      ],
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "CHANGELOG.md"
+          ]
+        }
+      ]
+    ]
   }
 }
